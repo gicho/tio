@@ -1,0 +1,32 @@
+name: Build TIO
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install Meson and Ninja
+        run: |
+          choco install meson ninja
+
+      - name: Set Visual Studio Environment Variables
+        run: |
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+      
+      - name: Build TIO
+        run: |
+          meson setup builddir
+          meson compile -C builddir
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: tio-exe
+          path: builddir/tio.exe # Update this with the correct path to your built executable
