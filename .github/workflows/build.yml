@@ -17,15 +17,18 @@ jobs:
         install: 'base-devel mingw-w64-x86_64-toolchain git'
 
     - name: Install dependencies
+      shell: msys2 {0}
       run: |
         pacman -Syu --noconfirm
 
     - name: Set up build environment
+      shell: msys2 {0}
       run: |
         # Set up the build environment using Meson
         meson setup builddir
 
     - name: Build
+      shell: msys2 {0}
       run: |
         # Compile the project using Meson
         meson compile -C builddir
