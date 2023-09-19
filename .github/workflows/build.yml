@@ -1,33 +1,31 @@
-name: Build TIO
+name: Build TIO on Windows
 
-on:
-  push:
-    branches: [ master ]
+on: [push, pull_request]
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+    - name: Checkout source code
+      uses: actions/checkout@v3
 
-      - name: Setup Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: '3.x'
+    - name: Set up MSYS2
+      uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        install: 'base-devel mingw-w64-x86_64-toolchain git'
 
-      - name: Install Meson and Ninja
-        run: |
-          pip install meson ninja
-      
-      - name: Build TIO
-        run: |
-          meson setup builddir
-          meson compile -C builddir
+    - name: Install dependencies
+      run: |
+        pacman -Syu --noconfirm
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: tio-exe
-          path: builddir/tio.exe # Update this with the correct path to your built executable
+    - name: Set up build environment
+      run: |
+        # Set up the build environment using Meson
+        meson setup builddir
+
+    - name: Build
+      run: |
+        # Compile the project using Meson
+        meson compile -C builddir
