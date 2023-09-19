@@ -2,7 +2,7 @@ name: Build TIO
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   build:
